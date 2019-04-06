@@ -11,32 +11,18 @@ dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
 
-AC_CHECK_PROG(GLIB_CONFIG, pkg-config, ok, NONE)
-
-if test "x$GLIB_CONFIG" != xNONE
-then
-	AC_MSG_CHECKING("for GLIB version")
-	glib_version=`pkg-config --version glib-2.0`
-	glib_flags=`pkg-config --cflags glib-2.0`
-	glib_libs=`pkg-config --libs glib-2.0`
-else
-	AC_MSG_ERROR("Could not find glib-config in PATH")
-fi
-
-AC_MSG_RESULT("$glib_version")
-
-dnl ADD CODE to check for version number
-
+dnl TODO: add the right version to check for
+PKG_CHECK_MODULES(GLIB,[glib-2.0 >= 0],,)
 
 dnl get rid of any duplicates in CFLAGS or LIBS
-for flag in ${glib_flags}
+for flag in $GLIB_CFLAGS
 do
 	if  echo "${CFLAGS}" | grep -v -- "$flag" > /dev/null
 	then
 		CFLAGS="${CFLAGS} $flag"
 	fi
 done
-for lib in ${glib_libs}
+for lib in $GLIB_LIBS
 do
 	if echo "${LIBS}" | grep -v -- "$lib" > /dev/null
 	then
